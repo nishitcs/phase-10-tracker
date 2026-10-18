@@ -504,7 +504,7 @@
     /* Tables (Matrix & History) */
     .table-responsive {
       overflow-x: auto;
-      margin-top: 10px;
+      margin-top: 6px;
     }
 
     table {
@@ -522,6 +522,25 @@
     th {
       font-weight: 800;
       background: var(--bg-elevated);
+    }
+
+    .status-pill-done {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 800;
+      color: var(--accent-mint);
+    }
+
+    .status-pill-target {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
     }
 
     /* Alerts & Winner Banner */
@@ -661,10 +680,23 @@
         </button>
       </section>
 
-      <!-- COLLAPSIBLE SCORING REFERENCE & PHASE CHECKLIST (DEFAULT HIDDEN) -->
+      <!-- ALWAYS-VISIBLE PHASE PROGRESS MATRIX (✅ Done / 🎯 Current) -->
+      <section class="card">
+        <div class="section-title">
+          <span>Phase Progress Tracker</span>
+          <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">
+            ✅ Completed &bull; 🎯 Current Target
+          </span>
+        </div>
+        <div class="table-responsive">
+          <table id="phaseMatrixTable"></table>
+        </div>
+      </section>
+
+      <!-- COLLAPSIBLE CARD PENALTY VALUES (DEFAULT HIDDEN) -->
       <section class="card">
         <div class="section-title" style="margin-bottom: 0;">
-          <span>Card Penalty Values &amp; Phase Matrix</span>
+          <span>Card Penalty Values</span>
           <button id="btnToggleRef" type="button" class="btn btn-secondary btn-sm">Show Reference</button>
         </div>
 
@@ -677,10 +709,6 @@
             <div class="legend-item"><span>Cards 10–12</span> <span>10 pts</span></div>
             <div class="legend-item"><span>Skip Card</span> <span>15 pts</span></div>
             <div class="legend-item"><span>Wild Card</span> <span>25 pts</span></div>
-          </div>
-
-          <div class="table-responsive" style="margin-top: 18px;">
-            <table id="phaseMatrixTable"></table>
           </div>
         </div>
       </section>
@@ -743,7 +771,7 @@
       history: []  // [{ roundNumber, entries: [{ playerId, score, phaseCompleted, wentOut }], prevPlayersSnapshot }]
     };
 
-    // Start with 2 default players as requested
+    // Default to 2 players at start
     let setupPlayerNames = ["Player 1", "Player 2"];
 
     /* ==========================================================================
@@ -1281,7 +1309,13 @@
         state.players.forEach(p => {
           const done = p.completedPhases.includes(pNum);
           const isCurrent = !done && getTargetPhaseNumber(p) === pNum;
-          html += `<td>${done ? "✅ Done" : isCurrent ? "🎯 Current" : "—"}</td>`;
+          html += `<td>${
+            done
+              ? `<span class="status-pill-done">✅ Done</span>`
+              : isCurrent
+              ? `<span class="status-pill-target">🎯 Current</span>`
+              : `<span style="color:var(--text-muted);">—</span>`
+          }</td>`;
         });
         html += `</tr>`;
       });
