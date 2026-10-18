@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="peppy-pop">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phase 10 — Official Score & Phase Tracker</title>
+  <style>
+    /* ==========================================================================
+       1. THEME SYSTEM (5 Professional Modes)
+       ========================================================================== */
+    :root,
+    [data-theme="peppy-pop"] {
+      --bg-app: #FAF8F5;
+      --bg-surface: #FFFFFF;
+      --bg-elevated: #F3EFEA;
+      --text-main: #18181B;
+      --text-muted: #52525B;
+      --border-color: #18181B;
+      --border-width: 2px;
+      --shadow-card: 4px 4px 0px #18181B;
+      --shadow-sm: 2px 2px 0px #18181B;
+      --primary: #FF4757;       /* Coral Red */
+      --primary-fg: #FFFFFF;
+      --secondary: #2E5BFF;     /* Electric Cobalt */
+      --accent-yellow: #FFC048; /* Sunny Yellow */
+      --accent-mint: #10AC84;   /* Mint Green */
+      --danger: #E11D48;
+      --radius: 12px;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    [data-theme="executive-dark"] {
+      --bg-app: #0F172A;
+      --bg-surface: #1E293B;
+      --bg-elevated: #334155;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --border-color: #334155;
+      --border-width: 1px;
+      --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+      --primary: #6366F1;
+      --primary-fg: #FFFFFF;
+      --secondary: #38BDF8;
+      --accent-yellow: #FBBF24;
+      --accent-mint: #10B981;
+      --danger: #F43F5E;
+      --radius: 10px;
+    }
+
+    [data-theme="nordic-minimal"] {
+      --bg-app: #F4F4F5;
+      --bg-surface: #FFFFFF;
+      --bg-elevated: #FAFAFA;
+      --text-main: #09090B;
+      --text-muted: #71717A;
+      --border-color: #E4E4E7;
+      --border-width: 1px;
+      --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.05);
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --primary: #18181B;
+      --primary-fg: #FFFFFF;
+      --secondary: #2563EB;
+      --accent-yellow: #D97706;
+      --accent-mint: #059669;
+      --danger: #DC2626;
+      --radius: 8px;
+    }
+
+    [data-theme="tournament-felt"] {
+      --bg-app: #064E3B;
+      --bg-surface: #FFFBEB;
+      --bg-elevated: #FEF3C7;
+      --text-main: #1C1917;
+      --text-muted: #57534E;
+      --border-color: #D97706;
+      --border-width: 1px;
+      --shadow-card: 0 8px 20px rgba(0, 0, 0, 0.35);
+      --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.2);
+      --primary: #B45309;
+      --primary-fg: #FFFFFF;
+      --secondary: #047857;
+      --accent-yellow: #F59E0B;
+      --accent-mint: #059669;
+      --danger: #B91C1C;
+      --radius: 10px;
+    }
+
+    [data-theme="sunset-lounge"] {
+      --bg-app: #1C1412;
+      --bg-surface: #2B1F1D;
+      --bg-elevated: #3D2C29;
+      --text-main: #FDE8E4;
+      --text-muted: #C8A49E;
+      --border-color: #543D38;
+      --border-width: 1px;
+      --shadow-card: 0 8px 20px rgba(0, 0, 0, 0.45);
+      --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.3);
+      --primary: #F97316;
+      --primary-fg: #FFFFFF;
+      --secondary: #FB7185;
+      --accent-yellow: #FBBF24;
+      --accent-mint: #34D399;
+      --danger: #EF4444;
+      --radius: 12px;
+    }
+
+    /* ==========================================================================
+       2. BASE LAYOUT & TYPOGRAPHY
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      padding-bottom: 60px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* Header */
+    .app-header {
+      background: var(--bg-surface);
+      border-bottom: var(--border-width) solid var(--border-color);
+      padding: 14px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-inner {
+      max-width: 920px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary);
+      color: var(--primary-fg);
+      font-weight: 900;
+      font-size: 1.1rem;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: var(--border-width) solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      letter-spacing: -0.5px;
+    }
+
+    .brand-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Cards & Containers */
+    .card {
+      background: var(--bg-surface);
+      border: var(--border-width) solid var(--border-color);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    /* Buttons & Inputs */
+    button, select, input {
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 44px;
+      padding: 10px 18px;
+      font-weight: 700;
+      border-radius: var(--radius);
+      border: var(--border-width) solid var(--border-color);
+      cursor: pointer;
+      transition: transform 0.1s ease, opacity 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--primary-fg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-secondary {
+      background: var(--bg-elevated);
+      color: var(--text-main);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #FFFFFF;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-sm {
+      min-height: 36px;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
+
+    .input-text, .select-box {
+      min-height: 44px;
+      padding: 8px 12px;
+      border-radius: var(--radius);
+      border: var(--border-width) solid var(--border-color);
+      background: var(--bg-app);
+      color: var(--text-main);
+      width: 100%;
+    }
+
+    [data-theme="tournament-felt"] .input-text,
+    [data-theme="tournament-felt"] .select-box {
+      background: #FFFFFF;
+      color: #1C1917;
+    }
+
+    /* Setup Grid */
+    .mode-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .mode-option {
+      border: var(--border-width) solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 14px;
+      cursor: pointer;
+      background: var(--bg-elevated);
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .mode-option.selected {
+      background: var(--primary);
+      color: var(--primary-fg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .mode-option.selected .mode-desc {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .mode-name {
+      font-weight: 800;
+      font-size: 0.98rem;
+      margin-bottom: 4px;
+    }
+
+    .mode-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .player-setup-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .player-setup-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    /* Badges & Pills */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      border: 1px solid var(--border-color);
+    }
+
+    .badge-phase {
+      background: var(--secondary);
+      color: #FFFFFF;
+    }
+
+    .badge-leader {
+      background: var(--accent-yellow);
+      color: #18181B;
+    }
+
+    .badge-complete {
+      background: var(--accent-mint);
+      color: #FFFFFF;
+    }
+
+    /* Live Leaderboard */
+    .leaderboard-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .leader-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: var(--bg-elevated);
+      border: var(--border-width) solid var(--border-color);
+    }
+
+    .rank-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-surface);
+      border: var(--border-width) solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 0.95rem;
+    }
+
+    .leader-row.is-first .rank-circle {
+      background: var(--accent-yellow);
+      color: #18181B;
+    }
+
+    .player-info-main {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .player-name-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-weight: 800;
+      font-size: 1.05rem;
+    }
+
+    .phase-req-line {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+    }
+
+    .score-box {
+      text-align: right;
+    }
+
+    .score-val {
+      font-size: 1.45rem;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .score-lbl {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    /* Round Entry Table/Cards */
+    .round-entry-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .round-player-card {
+      padding: 14px;
+      border-radius: var(--radius);
+      border: var(--border-width) solid var(--border-color);
+      background: var(--bg-elevated);
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    @media (max-width: 680px) {
+      .round-player-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .control-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .check-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      font-weight: 700;
+      font-size: 0.88rem;
+      min-height: 44px;
+    }
+
+    .check-pill input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+    }
+
+    /* Reference Legend Bar */
+    .legend-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .legend-item {
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+
+    /* Tables (Matrix & History) */
+    .table-responsive {
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      font-weight: 800;
+      background: var(--bg-elevated);
+    }
+
+    /* Alerts & Winner Banner */
+    .alert-error {
+      background: var(--danger);
+      color: #FFFFFF;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .winner-banner {
+      background: var(--accent-mint);
+      color: #FFFFFF;
+      border: var(--border-width) solid var(--border-color);
+      box-shadow: var(--shadow-card);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .winner-banner.sudden-death {
+      background: var(--accent-yellow);
+      color: #18181B;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- STICKY HEADER -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-logo">P10</span>
+        <div>
+          <div class="brand-title">Phase 10 Tracker</div>
+          <div id="headerModeSub" style="font-size: 0.76rem; color: var(--text-muted); font-weight: 600;">
+            Official Rules &bull; Sequential Phases
+          </div>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <label for="themeSelect" style="font-size: 0.8rem; font-weight: 700;">Theme:</label>
+        <select id="themeSelect" class="select-box" style="width: auto; min-height: 38px; padding: 4px 10px;">
+          <option value="peppy-pop">Peppy Pop</option>
+          <option value="executive-dark">Executive Dark</option>
+          <option value="nordic-minimal">Nordic Minimal</option>
+          <option value="tournament-felt">Tournament Felt</option>
+          <option value="sunset-lounge">Sunset Lounge</option>
+        </select>
+        <button id="btnResetGame" class="btn btn-danger btn-sm hidden" type="button">New Game</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ====================================================================
+         VIEW 1: GAME SETUP SCREEN
+         ==================================================================== -->
+    <section id="setupView" class="card">
+      <div class="section-title">
+        <span>1. Choose Game Mode (Phase Set)</span>
+      </div>
+      <div class="mode-grid" id="phaseSetGrid">
+        <div class="mode-option selected" data-mode="classic-10">
+          <div class="mode-name">Classic 10 Phases</div>
+          <div class="mode-desc">All Phases 1 through 10 in sequential order. The standard full experience.</div>
+        </div>
+        <div class="mode-option" data-mode="first-5">
+          <div class="mode-name">Short Game — First 5</div>
+          <div class="mode-desc">Phases 1 to 5 only. Fast 30-minute tabletop game.</div>
+        </div>
+        <div class="mode-option" data-mode="even-5">
+          <div class="mode-name">Alternative 5 — Even Phases</div>
+          <div class="mode-desc">Phases 2, 4, 6, 8, 10. Official rulebook favorite balancing sets, runs &amp; colors.</div>
+        </div>
+        <div class="mode-option" data-mode="odd-5">
+          <div class="mode-name">Alternative 5 — Odd Phases</div>
+          <div class="mode-desc">Phases 1, 3, 5, 7, 9. Heavy focus on multi-sets and runs.</div>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <span>2. Players (2 to 6 Players)</span>
+        <button id="btnAddPlayer" type="button" class="btn btn-secondary btn-sm">+ Add Player</button>
+      </div>
+      <div id="playerSetupList" class="player-setup-list"></div>
+
+      <div id="setupError" class="alert-error"></div>
+
+      <button id="btnStartGame" type="button" class="btn btn-primary" style="width: 100%; font-size: 1.05rem;">
+        Start Phase 10 Match &rarr;
+      </button>
+    </section>
+
+    <!-- ====================================================================
+         VIEW 2: ACTIVE GAME DASHBOARD
+         ==================================================================== -->
+    <div id="gameView" class="hidden">
+
+      <!-- WINNER / TIE-BREAKER BANNER -->
+      <div id="winnerBanner" class="winner-banner hidden"></div>
+
+      <!-- LIVE LEADERBOARD -->
+      <section class="card">
+        <div class="section-title">
+          <span>Live Standings</span>
+          <span id="roundCounterBadge" class="badge badge-phase">Round 1</span>
+        </div>
+        <div id="leaderboardList" class="leaderboard-list"></div>
+      </section>
+
+      <!-- END-OF-ROUND ENTRY FORM -->
+      <section id="roundEntrySection" class="card">
+        <div class="section-title">
+          <span id="roundEntryTitle">Record Round 1 Results</span>
+          <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">
+            Scores must be multiples of 5
+          </span>
+        </div>
+
+        <div id="roundError" class="alert-error"></div>
+
+        <div id="roundEntryList" class="round-entry-list"></div>
+
+        <button id="btnSubmitRound" type="button" class="btn btn-primary" style="width: 100%;">
+          Complete Round &amp; Update Standings
+        </button>
+      </section>
+
+      <!-- COLLAPSIBLE SCORING REFERENCE & PHASE CHECKLIST (DEFAULT HIDDEN) -->
+      <section class="card">
+        <div class="section-title" style="margin-bottom: 0;">
+          <span>Card Penalty Values &amp; Phase Matrix</span>
+          <button id="btnToggleRef" type="button" class="btn btn-secondary btn-sm">Show Reference</button>
+        </div>
+
+        <div id="referenceContent" class="hidden" style="margin-top: 14px;">
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">
+            Players count leftover cards in hand at the end of the round. <strong>Lowest score wins!</strong>
+          </p>
+          <div class="legend-grid">
+            <div class="legend-item"><span>Cards 1–9</span> <span>5 pts</span></div>
+            <div class="legend-item"><span>Cards 10–12</span> <span>10 pts</span></div>
+            <div class="legend-item"><span>Skip Card</span> <span>15 pts</span></div>
+            <div class="legend-item"><span>Wild Card</span> <span>25 pts</span></div>
+          </div>
+
+          <div class="table-responsive" style="margin-top: 18px;">
+            <table id="phaseMatrixTable"></table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ROUND HISTORY TABLE -->
+      <section class="card">
+        <div class="section-title">
+          <span>Round-by-Round History</span>
+          <button id="btnUndoRound" type="button" class="btn btn-secondary btn-sm" disabled>
+            &#8630; Undo Last Round
+          </button>
+        </div>
+        <div id="historyContainer" class="table-responsive">
+          <p style="font-size: 0.88rem; color: var(--text-muted);">No rounds completed yet.</p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    /* ==========================================================================
+       OFFICIAL PHASE 10 DATA & CONSTANTS
+       ========================================================================== */
+    const MASTER_PHASES = {
+      1: "2 sets of 3",
+      2: "1 set of 3 + 1 run of 4",
+      3: "1 set of 4 + 1 run of 4",
+      4: "1 run of 7",
+      5: "1 run of 8",
+      6: "1 run of 9",
+      7: "2 sets of 4",
+      8: "7 cards of one color",
+      9: "1 set of 5 + 1 set of 2",
+      10: "1 set of 5 + 1 set of 3"
+    };
+
+    const PHASE_SETS = {
+      "classic-10": { label: "Classic 10 Phases", phases: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
+      "first-5":    { label: "Short Game (Phases 1–5)", phases: [1, 2, 3, 4, 5] },
+      "even-5":     { label: "Even Phases (2, 4, 6, 8, 10)", phases: [2, 4, 6, 8, 10] },
+      "odd-5":      { label: "Odd Phases (1, 3, 5, 7, 9)", phases: [1, 3, 5, 7, 9] }
+    };
+
+    const STORAGE_KEY = "phase10_tracker_state_v3";
+    const THEME_KEY = "phase10_tracker_theme_v3";
+
+    /* ==========================================================================
+       APPLICATION STATE
+       ========================================================================== */
+    let state = {
+      active: false,
+      phaseSetKey: "classic-10",
+      activePhases: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      roundNumber: 1,
+      gameOver: false,
+      suddenDeath: false,
+      winnerIds: [],
+      players: [], // { id, name, totalScore, completedPhases: [], currentPhaseIndex: 0 }
+      history: []  // [{ roundNumber, entries: [{ playerId, score, phaseCompleted, wentOut }], prevPlayersSnapshot }]
+    };
+
+    // Start with 2 default players as requested
+    let setupPlayerNames = ["Player 1", "Player 2"];
+
+    /* ==========================================================================
+       INITIALIZATION & PERSISTENCE
+       ========================================================================== */
+    function init() {
+      // Load saved theme
+      const savedTheme = localStorage.getItem(THEME_KEY) || "peppy-pop";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+      document.getElementById("themeSelect").value = savedTheme;
+
+      // Bind theme switcher
+      document.getElementById("themeSelect").addEventListener("change", (e) => {
+        const theme = e.target.value;
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem(THEME_KEY, theme);
+      });
+
+      // Load saved game state
+      const rawState = localStorage.getItem(STORAGE_KEY);
+      if (rawState) {
+        try {
+          const parsed = JSON.parse(rawState);
+          if (parsed && parsed.active) {
+            state = parsed;
+          }
+        } catch (err) {
+          console.error("Failed to parse saved game state:", err);
+        }
+      }
+
+      bindSetupEvents();
+      bindGameEvents();
+
+      if (state.active) {
+        renderGameView();
+      } else {
+        renderSetupView();
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    /* ==========================================================================
+       SETUP SCREEN LOGIC
+       ========================================================================== */
+    function bindSetupEvents() {
+      // Phase Set Selection
+      document.querySelectorAll("#phaseSetGrid .mode-option").forEach((card) => {
+        card.addEventListener("click", () => {
+          document.querySelectorAll("#phaseSetGrid .mode-option").forEach(c => c.classList.remove("selected"));
+          card.classList.add("selected");
+          state.phaseSetKey = card.getAttribute("data-mode");
+        });
+      });
+
+      // Add Player Button (up to 6)
+      document.getElementById("btnAddPlayer").addEventListener("click", () => {
+        syncSetupPlayerInputs();
+        if (setupPlayerNames.length < 6) {
+          setupPlayerNames.push(`Player ${setupPlayerNames.length + 1}`);
+          renderSetupPlayers();
+        }
+      });
+
+      // Start Match Button
+      document.getElementById("btnStartGame").addEventListener("click", startNewGame);
+    }
+
+    function syncSetupPlayerInputs() {
+      const inputs = document.querySelectorAll(".setup-player-input");
+      if (inputs.length > 0) {
+        setupPlayerNames = Array.from(inputs).map(inp => inp.value);
+      }
+    }
+
+    function renderSetupView() {
+      document.getElementById("setupView").classList.remove("hidden");
+      document.getElementById("gameView").classList.add("hidden");
+      document.getElementById("btnResetGame").classList.add("hidden");
+      document.getElementById("headerModeSub").textContent = "Official Rules • Sequential Phases";
+      renderSetupPlayers();
+    }
+
+    function renderSetupPlayers() {
+      const list = document.getElementById("playerSetupList");
+      list.innerHTML = "";
+
+      setupPlayerNames.forEach((name, idx) => {
+        const row = document.createElement("div");
+        row.className = "player-setup-row";
+        row.innerHTML = `
+          <span style="font-weight:800; width: 28px;">#${idx + 1}</span>
+          <input type="text" class="input-text setup-player-input" value="${escapeHtml(name)}" placeholder="Enter player name" maxlength="24" />
+          ${setupPlayerNames.length > 2 ? `<button type="button" class="btn btn-secondary btn-sm btn-remove-player" data-idx="${idx}" title="Remove player">&times;</button>` : ""}
+        `;
+        list.appendChild(row);
+      });
+
+      document.querySelectorAll(".btn-remove-player").forEach(btn => {
+        btn.addEventListener("click", () => {
+          syncSetupPlayerInputs();
+          const removeIdx = parseInt(btn.getAttribute("data-idx"), 10);
+          setupPlayerNames.splice(removeIdx, 1);
+          renderSetupPlayers();
+        });
+      });
+
+      const addBtn = document.getElementById("btnAddPlayer");
+      addBtn.disabled = setupPlayerNames.length >= 6;
+      addBtn.textContent = setupPlayerNames.length >= 6 ? "Max 6 Players" : "+ Add Player";
+    }
+
+    function startNewGame() {
+      syncSetupPlayerInputs();
+      const cleanedNames = setupPlayerNames.map(n => n.trim()).filter(Boolean);
+      const errBox = document.getElementById("setupError");
+
+      if (cleanedNames.length < 2 || cleanedNames.length > 6) {
+        errBox.textContent = "Please provide between 2 and 6 valid player names.";
+        errBox.style.display = "block";
+        return;
+      }
+      errBox.style.display = "none";
+
+      const chosenSet = PHASE_SETS[state.phaseSetKey] || PHASE_SETS["classic-10"];
+
+      state.active = true;
+      state.activePhases = [...chosenSet.phases];
+      state.roundNumber = 1;
+      state.gameOver = false;
+      state.suddenDeath = false;
+      state.winnerIds = [];
+      state.history = [];
+      state.players = cleanedNames.map((name, idx) => ({
+        id: `p_${idx}_${Date.now()}`,
+        name,
+        totalScore: 0,
+        completedPhases: [],
+        currentPhaseIndex: 0 // Index into state.activePhases
+      }));
+
+      saveState();
+      renderGameView();
+    }
+
+    /* ==========================================================================
+       ACTIVE GAME VIEW & LOGIC (STANDARD SEQUENTIAL)
+       ========================================================================== */
+    function bindGameEvents() {
+      document.getElementById("btnResetGame").addEventListener("click", () => {
+        if (confirm("Start a new game? Current match progress will be cleared.")) {
+          state.active = false;
+          localStorage.removeItem(STORAGE_KEY);
+          renderSetupView();
+        }
+      });
+
+      document.getElementById("btnToggleRef").addEventListener("click", () => {
+        const ref = document.getElementById("referenceContent");
+        const isHidden = ref.classList.toggle("hidden");
+        document.getElementById("btnToggleRef").textContent = isHidden ? "Show Reference" : "Hide Reference";
+      });
+
+      document.getElementById("btnSubmitRound").addEventListener("click", handleRoundSubmit);
+      document.getElementById("btnUndoRound").addEventListener("click", handleUndoLastRound);
+    }
+
+    function getTargetPhaseNumber(player) {
+      if (player.completedPhases.length >= state.activePhases.length) {
+        return state.activePhases[state.activePhases.length - 1];
+      }
+      const idx = Math.min(player.currentPhaseIndex, state.activePhases.length - 1);
+      return state.activePhases[idx];
+    }
+
+    function renderGameView() {
+      document.getElementById("setupView").classList.add("hidden");
+      document.getElementById("gameView").classList.remove("hidden");
+      document.getElementById("btnResetGame").classList.remove("hidden");
+
+      const setLabel = PHASE_SETS[state.phaseSetKey]?.label || "Classic 10";
+      document.getElementById("headerModeSub").textContent = `${setLabel} • Sequential Progression`;
+
+      renderWinnerBanner();
+      renderLeaderboard();
+      renderRoundEntryForm();
+      renderPhaseMatrix();
+      renderHistoryTable();
+
+      document.getElementById("btnUndoRound").disabled = state.history.length === 0;
+    }
+
+    function renderWinnerBanner() {
+      const banner = document.getElementById("winnerBanner");
+      const entrySection = document.getElementById("roundEntrySection");
+
+      if (!state.gameOver && !state.suddenDeath) {
+        banner.classList.add("hidden");
+        entrySection.classList.remove("hidden");
+        return;
+      }
+
+      banner.classList.remove("hidden");
+
+      if (state.suddenDeath) {
+        banner.className = "winner-banner sudden-death";
+        const tiedNames = state.players
+          .filter(p => state.winnerIds.includes(p.id))
+          .map(p => escapeHtml(p.name))
+          .join(" & ");
+        banner.innerHTML = `
+          <div style="font-size: 1.4rem; font-weight: 900; margin-bottom: 6px;">&#9889; SUDDEN DEATH TIE-BREAKER!</div>
+          <p style="font-weight: 700;">
+            ${tiedNames} completed the final phase in the same round with the exact same total score!
+            Play one tie-breaker round on the final phase—first player to go out wins!
+          </p>
+        `;
+        entrySection.classList.remove("hidden");
+      } else {
+        banner.className = "winner-banner";
+        const winner = state.players.find(p => p.id === state.winnerIds[0]);
+        banner.innerHTML = `
+          <div style="font-size: 1.6rem; font-weight: 900; margin-bottom: 6px;">
+            &#127942; ${escapeHtml(winner ? winner.name : "Winner")} Wins the Match!
+          </div>
+          <p style="font-weight: 700; opacity: 0.95;">
+            Completed all ${state.activePhases.length} phases with a winning low score of ${winner ? winner.totalScore : 0} points after ${state.history.length} rounds.
+          </p>
+        `;
+        entrySection.classList.add("hidden");
+      }
+    }
+
+    function renderLeaderboard() {
+      document.getElementById("roundCounterBadge").textContent = state.gameOver
+        ? "Final Standings"
+        : `Round ${state.roundNumber}`;
+
+      const list = document.getElementById("leaderboardList");
+      list.innerHTML = "";
+
+      // Sort by phases completed DESC, then totalScore ASC
+      const ranked = [...state.players].sort((a, b) => {
+        if (b.completedPhases.length !== a.completedPhases.length) {
+          return b.completedPhases.length - a.completedPhases.length;
+        }
+        return a.totalScore - b.totalScore;
+      });
+
+      ranked.forEach((player, idx) => {
+        const isLeader = idx === 0;
+        const targetPhaseNum = getTargetPhaseNumber(player);
+        const allDone = player.completedPhases.length >= state.activePhases.length;
+
+        const row = document.createElement("div");
+        row.className = `leader-row ${isLeader ? "is-first" : ""}`;
+        row.innerHTML = `
+          <div class="rank-circle">${idx + 1}</div>
+          <div class="player-info-main">
+            <div class="player-name-line">
+              <span>${escapeHtml(player.name)}</span>
+              <span class="badge badge-phase">${player.completedPhases.length}/${state.activePhases.length} Phases</span>
+              ${isLeader ? `<span class="badge badge-leader">Leader</span>` : ""}
+              ${allDone ? `<span class="badge badge-complete">All Phases Complete!</span>` : ""}
+            </div>
+            <div class="phase-req-line">
+              ${allDone
+                ? `Completed Final Phase (${targetPhaseNum})`
+                : `<strong>Current Target — Phase ${targetPhaseNum}:</strong>${MASTER_PHASES[targetPhaseNum]}`}
+            </div>
+          </div>
+          <div class="score-box">
+            <div class="score-val">${player.totalScore}</div>
+            <div class="score-lbl">Points</div>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    function renderRoundEntryForm() {
+      document.getElementById("roundEntryTitle").textContent = state.suddenDeath
+        ? `Record Sudden Death Tie-Breaker (Round ${state.roundNumber})`
+        : `Record Round ${state.roundNumber} Results`;
+
+      const errBox = document.getElementById("roundError");
+      errBox.style.display = "none";
+
+      const container = document.getElementById("roundEntryList");
+      container.innerHTML = "";
+
+      state.players.forEach((player, idx) => {
+        const targetPhaseNum = getTargetPhaseNumber(player);
+
+        // Sequential override dropdown options
+        const overrideOptions = state.activePhases.map((pNum, pIdx) => {
+          const sel = pIdx === player.currentPhaseIndex ? "selected" : "";
+          return `<option value="${pIdx}" ${sel}>Target: Phase ${pNum}</option>`;
+        }).join("");
+
+        const card = document.createElement("div");
+        card.className = "round-player-card";
+        card.setAttribute("data-player-id", player.id);
+
+        card.innerHTML = `
+          <!-- Column 1: Player & Target Phase -->
+          <div>
+            <div style="font-weight: 800; font-size: 1.02rem; margin-bottom: 4px;">
+              ${escapeHtml(player.name)}
+            </div>
+            <div style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 6px;">
+              <strong>Phase ${targetPhaseNum}:</strong> ${MASTER_PHASES[targetPhaseNum]}
+            </div>
+            <select class="select-box seq-override-select" data-player-id="${player.id}" style="min-height: 32px; padding: 2px 8px; font-size: 0.78rem; width: auto;" title="Manual phase override">
+              ${overrideOptions}
+            </select>
+          </div>
+
+          <!-- Column 2: Went Out & Phase Completion -->
+          <div class="control-group">
+            <label class="check-pill">
+              <input type="radio" name="wentOutPlayer" class="radio-went-out" value="${player.id}" ${idx === 0 ? "checked" : ""} />
+              <span>Went Out (0 pts)</span>
+            </label>
+            <label class="check-pill">
+              <input type="checkbox" class="chk-completed-phase" data-player-id="${player.id}" ${idx === 0 ? "checked" : ""} />
+              <span>Completed Phase ${targetPhaseNum}?</span>
+            </label>
+          </div>
+
+          <!-- Column 3: Direct Numeric Score Input -->
+          <div class="control-group">
+            <label class="control-label" for="score_${player.id}">Round Penalty Score</label>
+            <input
+              type="number"
+              id="score_${player.id}"
+              class="input-text input-round-score"
+              data-player-id="${player.id}"
+              min="0"
+              step="5"
+              value="${idx === 0 ? "0" : ""}"
+              placeholder="0, 5, 10..."
+            />
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+
+      // Bind "Went Out" radio auto-zero & auto-complete phase
+      document.querySelectorAll(".radio-went-out").forEach(radio => {
+        radio.addEventListener("change", (e) => {
+          const wentOutId = e.target.value;
+          state.players.forEach(p => {
+            const scoreInp = document.querySelector(`.input-round-score[data-player-id="${p.id}"]`);
+            const chk = document.querySelector(`.chk-completed-phase[data-player-id="${p.id}"]`);
+            if (p.id === wentOutId) {
+              scoreInp.value = "0";
+              if (chk) chk.checked = true;
+            }
+          });
+        });
+      });
+
+      // Bind manual phase override dropdown
+      document.querySelectorAll(".seq-override-select").forEach(sel => {
+        sel.addEventListener("change", (e) => {
+          const pid = e.target.getAttribute("data-player-id");
+          const newIdx = parseInt(e.target.value, 10);
+          const pl = state.players.find(p => p.id === pid);
+          if (pl) {
+            pl.currentPhaseIndex = newIdx;
+            pl.completedPhases = state.activePhases.slice(0, newIdx);
+            saveState();
+            renderLeaderboard();
+            renderRoundEntryForm();
+            renderPhaseMatrix();
+          }
+        });
+      });
+    }
+
+    function handleRoundSubmit() {
+      const errBox = document.getElementById("roundError");
+      errBox.style.display = "none";
+
+      const wentOutRadio = document.querySelector('input[name="wentOutPlayer"]:checked');
+      const wentOutId = wentOutRadio ? wentOutRadio.value : null;
+
+      const entries = [];
+      let anyPhaseCompleted = false;
+
+      for (const player of state.players) {
+        const scoreInput = document.querySelector(`.input-round-score[data-player-id="${player.id}"]`);
+        const rawVal = scoreInput.value.trim();
+
+        if (rawVal === "") {
+          showRoundError(`Please enter a round score for ${player.name} (enter 0 if no penalty points).`);
+          return;
+        }
+
+        const score = Number(rawVal);
+        if (!Number.isInteger(score) || score < 0 || score % 5 !== 0) {
+          showRoundError(`Invalid score for ${player.name} (${rawVal}). All Phase 10 scores must be 0 or a positive multiple of 5.`);
+          return;
+        }
+
+        const isWentOut = player.id === wentOutId;
+        if (isWentOut && score !== 0) {
+          showRoundError(`${player.name} is marked as "Went Out" and must have a round score of 0.`);
+          return;
+        }
+
+        const chk = document.querySelector(`.chk-completed-phase[data-player-id="${player.id}"]`);
+        const phaseCompleted = chk && chk.checked ? getTargetPhaseNumber(player) : null;
+
+        if (phaseCompleted !== null) {
+          anyPhaseCompleted = true;
+        }
+
+        entries.push({
+          playerId: player.id,
+          score,
+          phaseCompleted,
+          wentOut: isWentOut
+        });
+      }
+
+      if (!anyPhaseCompleted) {
+        showRoundError("At least one player must have completed their phase to end the round.");
+        return;
+      }
+
+      // Snapshot current player states for Undo support
+      const prevPlayersSnapshot = JSON.parse(JSON.stringify(state.players));
+
+      // Apply scores and sequential phase advancements
+      entries.forEach(entry => {
+        const p = state.players.find(pl => pl.id === entry.playerId);
+        if (!p) return;
+
+        p.totalScore += entry.score;
+
+        if (entry.phaseCompleted !== null) {
+          if (!p.completedPhases.includes(entry.phaseCompleted)) {
+            p.completedPhases.push(entry.phaseCompleted);
+          }
+          if (p.currentPhaseIndex < state.activePhases.length) {
+            p.currentPhaseIndex += 1;
+          }
+        }
+      });
+
+      state.history.push({
+        roundNumber: state.roundNumber,
+        entries,
+        prevPlayersSnapshot,
+        prevSuddenDeath: state.suddenDeath
+      });
+
+      evaluateWinCondition();
+
+      if (!state.gameOver) {
+        state.roundNumber += 1;
+      }
+
+      saveState();
+      renderGameView();
+    }
+
+    function evaluateWinCondition() {
+      const totalRequired = state.activePhases.length;
+      const finishers = state.players.filter(p => p.completedPhases.length >= totalRequired);
+
+      if (finishers.length === 0) {
+        state.gameOver = false;
+        state.suddenDeath = false;
+        state.winnerIds = [];
+        return;
+      }
+
+      // Find lowest total score among players who completed all required phases
+      const minScore = Math.min(...finishers.map(p => p.totalScore));
+      const topFinishers = finishers.filter(p => p.totalScore === minScore);
+
+      if (topFinishers.length === 1) {
+        state.gameOver = true;
+        state.suddenDeath = false;
+        state.winnerIds = [topFinishers[0].id];
+      } else {
+        // Official tie-breaker: tied on both Final Phase completion and lowest score
+        state.gameOver = false;
+        state.suddenDeath = true;
+        state.winnerIds = topFinishers.map(p => p.id);
+      }
+    }
+
+    function handleUndoLastRound() {
+      if (state.history.length === 0) return;
+      const lastRound = state.history.pop();
+      state.players = lastRound.prevPlayersSnapshot;
+      state.roundNumber = lastRound.roundNumber;
+      state.gameOver = false;
+      state.suddenDeath = Boolean(lastRound.prevSuddenDeath);
+      state.winnerIds = [];
+
+      saveState();
+      renderGameView();
+    }
+
+    function showRoundError(msg) {
+      const errBox = document.getElementById("roundError");
+      errBox.textContent = msg;
+      errBox.style.display = "block";
+    }
+
+    /* ==========================================================================
+       PHASE MATRIX & ROUND HISTORY RENDERERS
+       ========================================================================== */
+    function renderPhaseMatrix() {
+      const table = document.getElementById("phaseMatrixTable");
+      let html = `<thead><tr><th>Phase</th><th>Requirement</th>`;
+      state.players.forEach(p => {
+        html += `<th>${escapeHtml(p.name)}</th>`;
+      });
+      html += `</tr></thead><tbody>`;
+
+      state.activePhases.forEach(pNum => {
+        html += `<tr>
+          <td><strong>Phase ${pNum}</strong></td>
+          <td>${MASTER_PHASES[pNum]}</td>`;
+        state.players.forEach(p => {
+          const done = p.completedPhases.includes(pNum);
+          const isCurrent = !done && getTargetPhaseNumber(p) === pNum;
+          html += `<td>${done ? "✅ Done" : isCurrent ? "🎯 Current" : "—"}</td>`;
+        });
+        html += `</tr>`;
+      });
+
+      html += `</tbody>`;
+      table.innerHTML = html;
+    }
+
+    function renderHistoryTable() {
+      const container = document.getElementById("historyContainer");
+      if (state.history.length === 0) {
+        container.innerHTML = `<p style="font-size: 0.88rem; color: var(--text-muted);">No rounds completed yet.</p>`;
+        return;
+      }
+
+      let html = `<table><thead><tr><th>Round</th>`;
+      state.players.forEach(p => {
+        html += `<th>${escapeHtml(p.name)}</th>`;
+      });
+      html += `</tr></thead><tbody>`;
+
+      state.history.forEach(round => {
+        html += `<tr><td><strong>R${round.roundNumber}</strong></td>`;
+        state.players.forEach(p => {
+          const entry = round.entries.find(e => e.playerId === p.id);
+          if (!entry) {
+            html += `<td>—</td>`;
+          } else {
+            const pBadge = entry.phaseCompleted
+              ? `<span class="badge badge-complete" style="font-size:0.7rem; padding:1px 6px;">P${entry.phaseCompleted} &#10003;</span>`
+              : `<span style="font-size:0.75rem; color:var(--text-muted);">Missed</span>`;
+            const outTag = entry.wentOut ? ` <span title="Went Out">&#9733;</span>` : "";
+            html += `<td><strong>+${entry.score}</strong>${outTag}<br/>${pBadge}</td>`;
+          }
+        });
+        html += `</tr>`;
+      });
+
+      html += `</tbody></table>`;
+      container.innerHTML = html;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    // Boot application
+    init();
+  </script>
+</body>
+</html>
